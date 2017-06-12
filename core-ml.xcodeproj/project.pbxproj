@@ -7,21 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F6AE76B1EEAB9510085FAA7 /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1F6AE76A1EEAB9510085FAA7 /* Resnet50.mlmodel */; };
 		1FEDC22A1EE817B000CE5F1A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDC2291EE817B000CE5F1A /* AppDelegate.swift */; };
-		1FEDC22C1EE817B000CE5F1A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDC22B1EE817B000CE5F1A /* ViewController.swift */; };
+		1FEDC22C1EE817B000CE5F1A /* LiveCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDC22B1EE817B000CE5F1A /* LiveCameraViewController.swift */; };
 		1FEDC22F1EE817B000CE5F1A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FEDC22D1EE817B000CE5F1A /* Main.storyboard */; };
 		1FEDC2311EE817B000CE5F1A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FEDC2301EE817B000CE5F1A /* Assets.xcassets */; };
 		1FEDC2341EE817B000CE5F1A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FEDC2321EE817B000CE5F1A /* LaunchScreen.storyboard */; };
+		1FEDC23C1EE817C100CE5F1A /* GoogLeNetPlaces.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDC23B1EE817C100CE5F1A /* GoogLeNetPlaces.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1F0A117D1EE822F400D2E369 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		1F0A117E1EE822FE00D2E369 /* CoreML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreML.framework; path = System/Library/Frameworks/CoreML.framework; sourceTree = SDKROOT; };
+		1F29E29B1EE939F6003460BD /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		1F6AE76A1EEAB9510085FAA7 /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = Resnet50.mlmodel; path = ../../../../Downloads/Resnet50.mlmodel; sourceTree = "<group>"; };
 		1FEDC2261EE817B000CE5F1A /* core-ml.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "core-ml.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FEDC2291EE817B000CE5F1A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1FEDC22B1EE817B000CE5F1A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1FEDC22B1EE817B000CE5F1A /* LiveCameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveCameraViewController.swift; sourceTree = "<group>"; };
 		1FEDC22E1EE817B000CE5F1A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1FEDC2301EE817B000CE5F1A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1FEDC2331EE817B000CE5F1A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1FEDC2351EE817B000CE5F1A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1FEDC23B1EE817C100CE5F1A /* GoogLeNetPlaces.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = GoogLeNetPlaces.mlmodel; path = ../../../../Downloads/GoogLeNetPlaces.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,11 +42,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1F0A117C1EE822F300D2E369 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1F29E29B1EE939F6003460BD /* CoreMedia.framework */,
+				1F0A117E1EE822FE00D2E369 /* CoreML.framework */,
+				1F0A117D1EE822F400D2E369 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		1FEDC21D1EE817B000CE5F1A = {
 			isa = PBXGroup;
 			children = (
 				1FEDC2281EE817B000CE5F1A /* core-ml */,
 				1FEDC2271EE817B000CE5F1A /* Products */,
+				1F0A117C1EE822F300D2E369 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -55,11 +73,13 @@
 			isa = PBXGroup;
 			children = (
 				1FEDC2291EE817B000CE5F1A /* AppDelegate.swift */,
-				1FEDC22B1EE817B000CE5F1A /* ViewController.swift */,
+				1FEDC22B1EE817B000CE5F1A /* LiveCameraViewController.swift */,
 				1FEDC22D1EE817B000CE5F1A /* Main.storyboard */,
 				1FEDC2301EE817B000CE5F1A /* Assets.xcassets */,
 				1FEDC2321EE817B000CE5F1A /* LaunchScreen.storyboard */,
 				1FEDC2351EE817B000CE5F1A /* Info.plist */,
+				1FEDC23B1EE817C100CE5F1A /* GoogLeNetPlaces.mlmodel */,
+				1F6AE76A1EEAB9510085FAA7 /* Resnet50.mlmodel */,
 			);
 			path = "core-ml";
 			sourceTree = "<group>";
@@ -135,8 +155,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1FEDC22C1EE817B000CE5F1A /* ViewController.swift in Sources */,
+				1FEDC22C1EE817B000CE5F1A /* LiveCameraViewController.swift in Sources */,
 				1FEDC22A1EE817B000CE5F1A /* AppDelegate.swift in Sources */,
+				1F6AE76B1EEAB9510085FAA7 /* Resnet50.mlmodel in Sources */,
+				1FEDC23C1EE817C100CE5F1A /* GoogLeNetPlaces.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +291,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COREML_CODEGEN_LANGUAGE = Swift;
+				COREML_CODEGEN_SWIFT_GLOBAL_MODULE = YES;
 				DEVELOPMENT_TEAM = S22AEPX323;
 				INFOPLIST_FILE = "core-ml/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -283,6 +307,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COREML_CODEGEN_LANGUAGE = Swift;
+				COREML_CODEGEN_SWIFT_GLOBAL_MODULE = YES;
 				DEVELOPMENT_TEAM = S22AEPX323;
 				INFOPLIST_FILE = "core-ml/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -312,6 +338,7 @@
 				1FEDC23A1EE817B000CE5F1A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
