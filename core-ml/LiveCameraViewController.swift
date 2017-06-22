@@ -1,13 +1,16 @@
 import UIKit
 import AVFoundation
 import CoreGraphics
+import CoreML
 
 class LiveCameraViewController: UIViewController {
     
     private var session: AVCaptureSession!
     
-    private let classifier = Resnet50()
-    private let inputImageScale = 224
+    private let ageNet = AgeNet()
+    private let genderNet = GenderNet()
+    
+    private let inputImageScale = 227
     
     private let predictionLabel = UILabel()
     
@@ -24,7 +27,8 @@ class LiveCameraViewController: UIViewController {
         predictionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(predictionLabel)
         predictionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        predictionLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20.0).isActive = true
+        predictionLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        predictionLabel.numberOfLines = 0
     }
     
     private func setupCamera() {
@@ -76,11 +80,14 @@ extension LiveCameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
         let rescaled = rescaledImageRectangle(createUIImage(from: imageBuffer), dimension: inputImageScale)
-        let rescaledBuffer = createCVPixelBuffer(from: rescaled)
+        let rescaledBuffer = createCVPixelBuffer(from: rescaled)!
         
-        guard let prediction = try? classifier.prediction(image: rescaledBuffer!) else { return }
+        let age = try! ageNet.prediction(data: rescaledBuffer)
+        let a = predictAge(data: age.prob)
+        let gender = try! genderNet.prediction(data: rescaledBuffer)
+        let g = predictGender(data: gender.prob)
         DispatchQueue.main.async {
-            self.predictionLabel.text = prediction.classLabel
+            self.predictionLabel.text = "Gender: \(g.0), prob: \(Int(g.1 * 100))%\nAge: \(a.0), prob: \(Int(g.1 * 100))%"
         }
     }
     
@@ -121,4 +128,29 @@ extension LiveCameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate
         
         return pixelBuffer
     }
+    
+    private func predictGender(data: MLMultiArray) -> (String, Double) {
+        let genders = ["Male", "Female"]
+        var probs: [Double] = []
+        for i in 0..<genders.count {
+            probs.append(data[i].doubleValue)
+        }
+        let maxProb = probs.max()!
+        let index = probs.index(of: maxProb)!
+        
+        return (genders[index], maxProb)
+    }
+    
+    private func predictAge(data: MLMultiArray) -> (String, Double) {
+        let ages = ["(0, 2)", "(4, 6)", "(8, 12)", "(15, 20)", "(25, 32)", "(38, 43)", "(48, 53)", "(60, 100)"]
+        var probs: [Double] = []
+        for i in 0..<ages.count {
+            probs.append(data[i].doubleValue)
+        }
+        let maxProb = probs.max()!
+        let index = probs.index(of: maxProb)!
+        
+        return (ages[index], maxProb)
+    }
+    
 }
