@@ -18,6 +18,8 @@ class LiveCameraViewController: UIViewController {
     @IBOutlet weak var ageClassLabel: UILabel!
     @IBOutlet weak var ageProbLabel: UILabel!
     
+    private var isMale = true
+    
     private var camera: LiveCamera!
     
     private let inputImageScale = 227
@@ -25,6 +27,9 @@ class LiveCameraViewController: UIViewController {
     
     private let ageModel = try! VNCoreMLModel(for: AgeNet().model)
     private let genderModel = try! VNCoreMLModel(for: GenderNet().model)
+    
+    private let color0Gender = UIColor(colorLiteralRed: 137.0 / 255.0, green: 139.0 / 255.0, blue: 252.0 / 255.0, alpha: 1.0)
+    private let color1Gender = UIColor(colorLiteralRed: 244.0 / 255.0, green: 144.0 / 255.0, blue: 191.0 / 255.0, alpha: 1.0)
     
     // MARK: - UIViewController
     
@@ -69,13 +74,42 @@ class LiveCameraViewController: UIViewController {
     }
     
     func updateAge(label: String, confidence: Float) {
-        print(#function)
-        print(label)
+        var editedLabel = label
+        [" ", "(", ")"].forEach {
+            editedLabel = editedLabel.replacingOccurrences(of: $0, with: "")
+        }
+        let ranges = editedLabel.split(separator: ",")
+        let genderText = NSAttributedString(string: isMale ? "And he's " : "And she's ")
+        let coloredPrediction = NSAttributedString(
+            string: "\(ranges[0])-\(ranges[1])",
+            attributes: [.foregroundColor : isMale ? color0Gender : color1Gender]
+        )
+        let dot = NSAttributedString(string: ".")
+        
+        let combination = NSMutableAttributedString(attributedString: genderText)
+        combination.append(coloredPrediction)
+        combination.append(dot)
+        
+        ageClassLabel.attributedText = combination
+        ageProbLabel.text = "This I am \(Int(confidence * 100.0))% sure."
     }
     
     func updateGender(label: String, confidence: Float) {
-        print(#function)
-        print(label)
+        isMale = label == "Male"
+        
+        let genderText = NSAttributedString(string: isMale ? "He is " : "She is ")
+        let coloredPrediction = NSAttributedString(
+            string: isMale ? "man" : "woman",
+            attributes: [.foregroundColor : isMale ? color0Gender : color1Gender]
+        )
+        let dot = NSAttributedString(string: ".")
+        
+        let combination = NSMutableAttributedString(attributedString: genderText)
+        combination.append(coloredPrediction)
+        combination.append(dot)
+        
+        genderClassLabel.attributedText = combination
+        genderProbLabel.text = "I'm \(Int(confidence * 100.0))% sure."
     }
 }
 
