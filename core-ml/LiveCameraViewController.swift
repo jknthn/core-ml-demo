@@ -13,56 +13,69 @@ import CoreMedia
 
 class LiveCameraViewController: UIViewController {
     
-    private var ageRequest: VNCoreMLRequest = {
-        let model = try! VNCoreMLModel(for: AgeNet().model)
-        return VNCoreMLRequest(model: model) { request, error in
-            if let observation = request.results?.first as? VNClassificationObservation {
-                print(observation.identifier)
-                print(observation.confidence)
-            }
-        }
-    }()
-    
-    private var genderRequest: VNCoreMLRequest = {
-        let model = try! VNCoreMLModel(for: GenderNet().model)
-        return VNCoreMLRequest(model: model) { request, error in
-            if let observation = request.results?.first as? VNClassificationObservation {
-                print(observation.identifier)
-                print(observation.confidence)
-            }
-        }
-    }()
+    @IBOutlet weak var genderClassLabel: UILabel!
+    @IBOutlet weak var genderProbLabel: UILabel!
+    @IBOutlet weak var ageClassLabel: UILabel!
+    @IBOutlet weak var ageProbLabel: UILabel!
     
     private var camera: LiveCamera!
     
     private let inputImageScale = 227
-    private let predictionLabel = UILabel()
     private let displayView = UIView()
+    
+    private let ageModel = try! VNCoreMLModel(for: AgeNet().model)
+    private let genderModel = try! VNCoreMLModel(for: GenderNet().model)
     
     // MARK: - UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        UIApplication.shared.statusBarStyle = .lightContent
         setupDisplayView()
-        setupLabel()
         camera = LiveCamera(view: displayView)
         camera.delegate = self
-    }
-    
-    private func setupLabel() {
-        predictionLabel.textColor = .white
-        predictionLabel.font = UIFont.systemFont(ofSize: 20.0, weight: .light)
-        predictionLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(predictionLabel)
-        predictionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        predictionLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        predictionLabel.numberOfLines = 0
     }
     
     private func setupDisplayView() {
         displayView.frame = view.bounds
         view.insertSubview(displayView, at: 0)
         displayView.setNeedsLayout()
+    }
+    
+    // MARK: - CoreML & Vision utils
+    
+    func createAgeRequest() -> VNCoreMLRequest {
+        return VNCoreMLRequest(model: ageModel, completionHandler: onClassification)
+    }
+    
+    func createGenderRequest() -> VNCoreMLRequest {
+        return VNCoreMLRequest(model: genderModel, completionHandler: onClassification)
+    }
+    
+    func onClassification(request: VNRequest, error: Error?) {
+        guard
+            let results = request.results as? [VNClassificationObservation],
+            let result = results.first
+        else {
+                return
+        }
+        DispatchQueue.main.async { [weak self] in
+            if results.count == 2 { // Gender
+                self?.updateGender(label: result.identifier, confidence: result.confidence)
+            } else { // Age
+                self?.updateAge(label: result.identifier, confidence: result.confidence)
+            }
+        }
+    }
+    
+    func updateAge(label: String, confidence: Float) {
+        print(#function)
+        print(label)
+    }
+    
+    func updateGender(label: String, confidence: Float) {
+        print(#function)
+        print(label)
     }
 }
 
@@ -73,22 +86,6 @@ extension LiveCameraViewController: LiveCameraDelegate {
             .rescaled(width: inputImageScale, height: inputImageScale)
             .cgImage
         let handler = VNImageRequestHandler(cgImage: image!)
-        try? handler.perform([ageRequest, genderRequest])
-        
-        
-        
-//        let agePred = try! ageNet.prediction(data: imageBuffer)
-//        let ageString = agePred.classLabel
-//        let ageProb = String(format: "%.2f", agePred.prob[ageString]! * 100.0)
-//        let genderPred = try! genderNet.prediction(data: imageBuffer)
-//        let genderString = genderPred.classLabel
-//        let genderProb = String(format: "%.2f", genderPred.prob[genderString]! * 100.0)
-        
-//        DispatchQueue.main.async {
-//            self.predictionLabel.text = """
-//            Gender: \(genderString) prob: \(ageProb)%
-//            Age: \(ageString) prob: \(genderProb)%
-//            """
-//        }
+        try? handler.perform([createAgeRequest(), createGenderRequest()])
     }
 }
