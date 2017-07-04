@@ -116,10 +116,7 @@ class LiveCameraViewController: UIViewController {
 extension LiveCameraViewController: LiveCameraDelegate {
     
     func didUpdateBuffer(_ buffer: CMSampleBuffer, on camera: LiveCamera) {
-        let image = UIImage(buffer: CMSampleBufferGetImageBuffer(buffer)!)?
-            .rescaled(width: inputImageScale, height: inputImageScale)
-            .cgImage
-        let handler = VNImageRequestHandler(cgImage: image!)
+        let handler = VNImageRequestHandler(cvPixelBuffer: CMSampleBufferGetImageBuffer(buffer)!, options: [:])
         try? handler.perform([createAgeRequest(), createGenderRequest()])
     }
 }
